@@ -1,85 +1,70 @@
 package com.example.restaurant.service;
 
+import com.example.restaurant.model.Restaurant;
+import com.example.restaurant.model.RestaurantResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Service responsible for fetching and filtering restaurant data from the Just Eat API.
+ * <p>
+ * Calls the Just Eat enriched restaurant endpoint, deserialises the response directly
+ * into {@link Restaurant} objects via Jackson, and returns a {@link RestaurantResponse}
+ * capped at {@value MAX_RESULTS} results.
+ */
 @Service
 public class RestaurantService {
+
+    /**
+     * Maximum number of restaurants to return in a single response.
+     * Adjust this value to control the result set size.
+     */
+    private static final int MAX_RESULTS = 10;
+
+    /** Base URL of the Just Eat enriched restaurant API. */
+    private static final String JUST_EAT_API_BASE_URL = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String JUST_EAT_API_BASE_URL = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";
-
+    /**
+     * Constructs the service with a {@link RestTemplate} built from Spring Boot's
+     * auto-configured {@link RestTemplateBuilder}.
+     *
+     * @param builder the Spring Boot RestTemplate builder
+     */
     public RestaurantService(RestTemplateBuilder builder) {
         this.restTemplate = builder.build();
     }
 
-    public ObjectNode getRestaurantsByPostcode(String postcode) throws Exception {
+    /**
+     * Fetches restaurants for the given postcode from the Just Eat API and returns
+     * the first {@value MAX_RESULTS} results.
+     *
+     * @param postcode the UK postcode to search (e.g. "EC4M7RF")
+     * @return a {@link RestaurantResponse} containing the postcode and up to {@value MAX_RESULTS} restaurants
+     * @throws Exception if the API call fails or the response cannot be parsed
+     */
+    public RestaurantResponse getRestaurantsByPostcode(String postcode) throws Exception {
         String url = JUST_EAT_API_BASE_URL + "/" + postcode;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        String body = restTemplate.getForObject(url, String.class);
+        JsonNode restaurantsNode = mapper.readTree(body).get("restaurants");
 
-        JsonNode rootNode = mapper.readTree(response.getBody());
-        JsonNode restaurantsNode = rootNode.get("restaurants");
+        List<Restaurant> restaurants = restaurantsNode == null ? List.of() :
+                mapper.convertValue(restaurantsNode, new TypeReference<List<Restaurant>>() {})
+                      .stream()
+                      .limit(MAX_RESULTS)
+                      .collect(Collectors.toList());
 
-        if (restaurantsNode == null || !restaurantsNode.isArray()) {
-            return mapper.createObjectNode();
-        }
-
-        ArrayNode filteredRestaurants = mapper.createArrayNode();
-
-        for (JsonNode restaurant : restaurantsNode) {
-            ObjectNode filtered = mapper.createObjectNode();
-
-            filtered.put("id", restaurant.get("id").asText());
-            filtered.put("name", restaurant.get("name").asText());
-
-            JsonNode address = restaurant.get("address");
-            if (address != null) {
-                ObjectNode addressObj = mapper.createObjectNode();
-                addressObj.put("firstLine", address.get("firstLine") != null ? address.get("firstLine").asText() : "");
-                addressObj.put("city", address.get("city") != null ? address.get("city").asText() : "");
-                addressObj.put("postalCode", address.get("postalCode") != null ? address.get("postalCode").asText() : "");
-                filtered.set("address", addressObj);
-            }
-
-            JsonNode rating = restaurant.get("rating");
-            if (rating != null) {
-                ObjectNode ratingObj = mapper.createObjectNode();
-                ratingObj.put("starRating", rating.get("starRating") != null ? rating.get("starRating").asDouble() : 0);
-                ratingObj.put("count", rating.get("count") != null ? rating.get("count").asInt() : 0);
-                filtered.set("rating", ratingObj);
-            }
-
-            JsonNode cuisines = restaurant.get("cuisines");
-            if (cuisines != null && cuisines.isArray()) {
-                ArrayNode cuisineArray = mapper.createArrayNode();
-                for (JsonNode cuisine : cuisines) {
-                    ObjectNode cuisineObj = mapper.createObjectNode();
-                    cuisineObj.put("name", cuisine.get("name") != null ? cuisine.get("name").asText() : "");
-                    cuisineObj.put("uniqueName", cuisine.get("uniqueName") != null ? cuisine.get("uniqueName").asText() : "");
-                    cuisineArray.add(cuisineObj);
-                }
-                filtered.set("cuisines", cuisineArray);
-            }
-
-            filteredRestaurants.add(filtered);
-        }
-
-        ObjectNode result = mapper.createObjectNode();
-        result.put("postcode", postcode);
-        result.put("count", filteredRestaurants.size());
-        result.set("restaurants", filteredRestaurants);
-
-        return result;
+        return new RestaurantResponse(postcode, restaurants);
     }
 }
-
