@@ -59,6 +59,16 @@ The application will start on `http://localhost:8080/home`
 
 ## API Endpoints
 
+### Welcome Endpoint
+
+- `GET /home` - Welcome message
+
+### Just Eat Restaurants API
+
+- `GET /api/restaurants/bypostcode/{postcode}` - Fetch restaurants by postcode
+  - Example: `/api/restaurants/bypostcode/L4%200TH`
+  - Returns: JSON with restaurant data including name, address, rating, cuisines, availability, and delivery info
+
 ### Health & Info (Actuator)
 
 - `GET /actuator/health` - Application health status
