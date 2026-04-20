@@ -5,65 +5,157 @@
 </head>
 <body>
 
-  <div class="card">
-    <div class="name">Detroit & waffle Republic</div>
-    <div class="cuisines">Waffles,Desserts,Deals</div>
-    <div class="rating">Rating: 4.5</div>
-    <div class="address">
-      <svg class="pin" width="14" height="14" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-        <circle cx="12" cy="10" r="3"/>
-      </svg>
-      57 Goodison Road, Liverpool, L4 4EJ
-    </div>
-  </div>
+  <div class="grid" id="restaurant-grid"></div>
+
+  <script>
+    const data = {
+      "postcode": "L4 0TH",
+      "restaurants": [
+        {
+          "id": "234201",
+          "name": "Detroit & waffle Republic",
+          "address": { "firstLine": "57 Goodison Road", "city": "Liverpool", "postalCode": "L4 4EJ" },
+          "rating": { "starRating": 4.5 },
+          "cuisines": [{ "name": "Waffles" }, { "name": "Desserts" }, { "name": "Deals" }]
+        },
+        {
+          "id": "234071",
+          "name": "Food Republic Pizza",
+          "address": { "firstLine": "57 Goodison Road", "city": "Liverpool", "postalCode": "L4 4EJ" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Pizza" }, { "name": "Kebab" }, { "name": "Deals" }]
+        },
+        {
+          "id": "279341",
+          "name": "Little Italy Pizza - Wood Fire Oven Pizzeria",
+          "address": { "firstLine": "48 Hawthorne Road", "city": "Bootle", "postalCode": "L20 2DW" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Pizza" }, { "name": "Italian" }, { "name": "Deals" }]
+        },
+        {
+          "id": "221870",
+          "name": "Pasta Evangelists",
+          "address": { "firstLine": "57- 59 Victoria Street", "city": "Liverpool", "postalCode": "L1 6DG" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Italian" }, { "name": "Pasta" }, { "name": "Deals" }]
+        },
+        {
+          "id": "503",
+          "name": "Casa Pizza",
+          "address": { "firstLine": "470 Prescot Road, Old Swan", "city": "Liverpool", "postalCode": "L13 3DB" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Pizza" }, { "name": "Kebab" }, { "name": "Deals" }]
+        },
+        {
+          "id": "77571",
+          "name": "Nabzys - Breck Road",
+          "address": { "firstLine": "74 Breck Road", "city": "Liverpool", "postalCode": "L4 2RB" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Pizza" }, { "name": "Chicken" }, { "name": "Halal" }]
+        },
+        {
+          "id": "198623",
+          "name": "Umami",
+          "address": { "firstLine": "60 City Road", "city": "Liverpool", "postalCode": "L4 5TE" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Burgers" }, { "name": "Chicken" }, { "name": "Deals" }]
+        },
+        {
+          "id": "425836",
+          "name": "Booze Club Off Licence",
+          "address": { "firstLine": "116 Oakfield Road", "city": "Liverpool", "postalCode": "L4 0UQ" },
+          "rating": { "starRating": 0 },
+          "cuisines": [{ "name": "Convenience" }, { "name": "Alcohol" }, { "name": "Groceries" }]
+        },
+        {
+          "id": "205565",
+          "name": "Lukas1",
+          "address": { "firstLine": "14 County Road", "city": "Liverpool", "postalCode": "L4 3QH" },
+          "rating": { "starRating": 5 },
+          "cuisines": [{ "name": "Desserts" }, { "name": "Waffles" }, { "name": "Deals" }]
+        },
+        {
+          "id": "123597",
+          "name": "McDonald's® - Walton Rd",
+          "address": { "firstLine": "202/218 Walton Road", "city": "Liverpool", "postalCode": "L4 4BB" },
+          "rating": { "starRating": 3 },
+          "cuisines": [{ "name": "Burgers" }, { "name": "Chicken" }, { "name": "Deals" }]
+        }
+      ]
+    };
+
+    const grid = document.getElementById('restaurant-grid');
+
+    data.restaurants.forEach(r => {
+      const cuisines = r.cuisines.map(c => c.name).join(' · ');
+      const address = `${r.address.firstLine}, ${r.address.city}, ${r.address.postalCode}`;
+      const rating = r.rating.starRating > 0 ? `Rating: ${r.rating.starRating}` : 'No rating yet';
+
+      grid.innerHTML += `
+        <div class="card">
+          <div class="name">${r.name}</div>
+          <div class="cuisine">${cuisines}</div>
+          <div class="rating">${rating}</div>
+          <div class="address">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            ${address}
+          </div>
+        </div>
+      `;
+    });
+  </script>
 
   <style>
     body {
       font-family: sans-serif;
       background: #f5f5f5;
-      display: flex;
-      justify-content: center;
       padding: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
     }
 
     .card {
       background: #fff;
       border: 1px solid #e0e0e0;
       border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      max-width: 420px;
-      width: 100%;
+      padding: 1rem 1.25rem;
     }
 
     .name {
-      font-size: 20px;
+      font-size: 15px;
       font-weight: 500;
       color: #111;
       margin-bottom: 4px;
     }
 
-    .cuisines {
-      font-size: 13px;
+    .cuisine {
+      font-size: 12px;
       color: #777;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
-    .rating {      
-      font-size: 14px;
-      margin-bottom: 14px;
+    .rating {
+      font-size: 13px;
+      color: #111;
+      margin-bottom: 8px;
     }
-  
+
     .address {
       display: flex;
       align-items: flex-start;
-      gap: 6px;
-      font-size: 13px;
+      gap: 5px;
+      font-size: 12px;
       color: #777;
     }
 
-    .pin {
+    .address svg {
       margin-top: 2px;
       flex-shrink: 0;
     }
