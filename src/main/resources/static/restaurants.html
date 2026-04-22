@@ -8,44 +8,36 @@
   <div id="status"></div>
   <div class="grid" id="restaurant-grid"></div>
 
+  <template id="card-template">
+    <div class="card">
+      <div class="name"></div>
+      <div class="cuisine"></div>
+      <div class="rating"></div>
+      <div class="address">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span class="address-text"></span>
+      </div>
+    </div>
+  </template>
+
   <script>
-    async function fetchRestaurants(postcode) {
-      try {
-        const res = await fetch(`http://localhost:8080/api/restaurants/bypostcode/${encodeURIComponent(postcode)}`);
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-        const data = await res.json();
-        console.log("data:", data);
-        const grid = document.getElementById('restaurant-grid');
-
-        data.restaurants.forEach(r => {
-          const cuisines = r.cuisines.map(c => c.name).join(', ');
-          const address = `${r.address.firstLine}, ${r.address.city}, ${r.address.postalCode}`;
-          const rating = r.rating.starRating > 0 ? `Rating: ${r.rating.starRating}` : 'No rating yet';
-
-          grid.innerHTML += `
-            <div class="card">
-              <div class="name">${r.name}</div>
-              <div class="cuisine">${cuisines}</div>
-              <div class="rating">${rating}</div>
-              <div class="address">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                ${address}
-              </div>
-            </div>
-          `;
-        });
-
-      } catch (err) {
-        document.getElementById('status').textContent = `Failed to load restaurants: ${err.message}`;
-      }
+    function renderRestaurants(restaurants) {
+      const grid = document.getElementById('restaurant-grid');
+      const template = document.getElementById('card-template');
+      restaurants.forEach(({ name, cuisines, address, rating }) => {
+        const card = template.content.cloneNode(true);
+        card.querySelector('.name').textContent = name;
+        card.querySelector('.cuisine').textContent = cuisines;
+        card.querySelector('.rating').textContent = rating;
+        card.querySelector('.address-text').textContent = address;
+        grid.appendChild(card);
+      });
     }
-
-    const postcode = new URLSearchParams(window.location.search).get('postcode');
-    fetchRestaurants(postcode);
   </script>
+  <script type="module" src="restaurants.js"></script>
 
   <style>
     body {
