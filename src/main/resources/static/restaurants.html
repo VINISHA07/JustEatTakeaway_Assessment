@@ -25,6 +25,10 @@
 
   <script>
     function renderRestaurants(restaurants) {
+      if (restaurants.length === 0) {
+        document.getElementById('status').textContent = 'No restaurants found for this postcode. Please check the postcode and try again.';
+        return;
+      }
       const grid = document.getElementById('restaurant-grid');
       const template = document.getElementById('card-template');
       restaurants.forEach(({ name, cuisines, address, rating }) => {

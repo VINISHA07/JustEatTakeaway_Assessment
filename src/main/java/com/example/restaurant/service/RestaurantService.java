@@ -1,7 +1,6 @@
 package com.example.restaurant.service;
 
 import com.example.restaurant.model.Restaurant;
-import com.example.restaurant.model.RestaurantResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,8 +16,8 @@ import java.util.stream.Collectors;
  * Service responsible for fetching and filtering restaurant data from the Just Eat API.
  * <p>
  * Calls the Just Eat enriched restaurant endpoint, deserialises the response directly
- * into {@link Restaurant} objects via Jackson, and returns a {@link RestaurantResponse}
- * capped at {@value MAX_RESULTS} results.
+ * into {@link Restaurant} objects via Jackson, and returns a List capped at
+ * {@value MAX_RESULTS} results.
  */
 @Service
 public class RestaurantService {
@@ -50,10 +49,10 @@ public class RestaurantService {
      * the first {@value MAX_RESULTS} results.
      *
      * @param postcode the UK postcode to search (e.g. "EC4M7RF")
-     * @return a {@link RestaurantResponse} containing the postcode and up to {@value MAX_RESULTS} restaurants
+     * @return up to {@value MAX_RESULTS} restaurants
      * @throws Exception if the API call fails or the response cannot be parsed
      */
-    public RestaurantResponse getRestaurantsByPostcode(String postcode) throws Exception {
+    public List<Restaurant> getRestaurantsByPostcode(String postcode) throws Exception {
         String url = JUST_EAT_API_BASE_URL + "/" + postcode;
 
         String body = restTemplate.getForObject(url, String.class);
@@ -65,6 +64,6 @@ public class RestaurantService {
                       .limit(MAX_RESULTS)
                       .collect(Collectors.toList());
 
-        return new RestaurantResponse(postcode, restaurants);
+        return restaurants;
     }
 }

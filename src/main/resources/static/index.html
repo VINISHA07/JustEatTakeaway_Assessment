@@ -6,20 +6,27 @@
 <body>
 
   <div class="page">
-  <img src="just-eat-logo.png" alt="Just Eat Logo" class="logo" />
-  <div class="container">
-    <h1>Find Restaurants in UK</h1>
-    <div class="form">
-      <input type="text" id="postcode" placeholder="Please enter postcode" />
-      <button onclick="submit()">Submit</button>
+    <div class="container">
+      <img src="just-eat-logo.png" alt="Just Eat Logo" class="logo" />
+      <h1>Find Restaurants in the UK</h1>
+      <div class="form">
+        <input type="text" id="postcode" placeholder="Please enter postcode" />
+        <button onclick="submit()">Submit</button>
       </div>
+      <p id="error" class="error" hidden></p>
     </div>
   </div>
 
   <script>
     function submit() {
       const postcode = document.getElementById('postcode').value.trim();
-      if (!postcode) return;
+      const error = document.getElementById('error');
+      if (!postcode) {
+        error.textContent = 'Please enter a postcode.';
+        error.hidden = false;
+        return;
+      }
+      error.hidden = true;
       window.location.href = `restaurants.html?postcode=${encodeURIComponent(postcode)}`;
     }
 
@@ -70,7 +77,12 @@
     p {
       font-size: 14px;
       color: #777;
-      margin: 0 0 1.5rem;
+    }
+
+    .error {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #c0392b;
     }
 
     .form {
