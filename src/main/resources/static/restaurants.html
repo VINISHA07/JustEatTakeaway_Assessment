@@ -14,7 +14,7 @@
         const res = await fetch(`http://localhost:8080/api/restaurants/bypostcode/${encodeURIComponent(postcode)}`);
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         const data = await res.json();
-
+        console.log("data:", data);
         const grid = document.getElementById('restaurant-grid');
 
         data.restaurants.forEach(r => {
