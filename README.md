@@ -126,6 +126,7 @@ Application settings are defined in `src/main/resources/application.yml`:
 ## Assumptions
 
 - **UK postcodes only** - The Just Eat API endpoint used is specific to the UK (`uk.api.just-eat.io`). The application does not validate postcode format; it passes the user input directly to the API.
+- **Result limit of 12** - The service returns a maximum of 12 restaurants per search. This was chosen over 10 for a more well-rounded grid display, as 10 felt visually incomplete on a 4-column layout.
 - **No authentication required** - The Just Eat discovery API is assumed to be publicly accessible without API keys or tokens.
 - **Cuisines include non-food tags** - The Just Eat API returns values like "Deals", "Freebies", "Collect stamps" etc. under the cuisines field. These are not actual cuisines but are treated as such since they come from the same field in the API response.
 
@@ -153,3 +154,21 @@ Application settings are defined in `src/main/resources/application.yml`:
 - **Lombok**: Annotation-based boilerplate reduction
 - **Tailwind CSS**: Utility-first CSS (via CDN) for frontend styling
 - **Configuration Format**: YAML
+
+## Interface images
+
+### Home Screen
+
+![alt text](JET1.png)
+
+### Restaurant list display
+
+![alt text](JET2.png)
+
+### Empty restaurant list (Incorrect pincode/Fetch error)
+
+![alt text](JET3.png)
+
+### Empty postcode
+
+![alt text](JET4.png)
