@@ -12,8 +12,7 @@ async function fetchRestaurants(postcode) {
     const res = await fetch(`http://localhost:8080/api/restaurants/bypostcode/${encodeURIComponent(postcode)}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     const data = await res.json();
-
-    window.renderRestaurants(data.restaurants.map(mapRestaurant));
+    window.renderRestaurants(data.map(mapRestaurant));
 
   } catch (err) {
     document.getElementById('status').textContent = `Failed to load restaurants: ${err.message}`;
