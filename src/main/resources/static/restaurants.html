@@ -2,24 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <button id="back-button">
+<body class="bg-gray-100 p-8 font-sans">
+
+  <button id="back-button" class="mb-4 bg-transparent border-none cursor-pointer p-1 hover:bg-gray-200 rounded-full transition" onclick="window.location.href='/'">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="19" y1="12" x2="5" y2="12"></line>
       <polyline points="12 19 5 12 12 5"></polyline>
     </svg>
   </button>
-  <div id="status"></div>
-  <div class="grid" id="restaurant-grid"></div>
+  <div id="status" class="text-red-500 mb-4 text-sm"></div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="restaurant-grid"></div>
 
   <template id="card-template">
     <div class="card">
       <div class="name"></div>
       <div class="cuisine"></div>
-      <div class="rating"></div>
-      <div class="address">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="rating flex items-center gap-1">
+        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span class="rating-text"></span>
+      </div>
+      <div class="address flex items-start gap-1.5">
+        <svg class="mt-0.5 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
           <circle cx="12" cy="10" r="3"/>
         </svg>
@@ -29,9 +36,6 @@
   </template>
 
   <script>
-    document.getElementById('back-button').addEventListener('click', () => {
-      window.location.href = '/';
-    });
     function renderRestaurants(restaurants) {
       if (restaurants.length === 0) {
         document.getElementById('status').textContent = 'No restaurants found for this postcode. Please check the postcode and try again.';
@@ -43,7 +47,7 @@
         const card = template.content.cloneNode(true);
         card.querySelector('.name').textContent = name;
         card.querySelector('.cuisine').textContent = cuisines;
-        card.querySelector('.rating').textContent = rating;
+        card.querySelector('.rating-text').textContent = rating;
         card.querySelector('.address-text').textContent = address;
         grid.appendChild(card);
       });
@@ -52,35 +56,18 @@
   <script type="module" src="restaurants.js"></script>
 
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f5f5f5;
-      padding: 2rem;
-    }
-
-    #back-button {
-      background: none;
-      border: none;
-      margin-bottom: 1rem;
-    }
-
-    #status {
-      color: red;
-      margin-bottom: 1rem;
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
     .card {
       background: #fff;
       border: 1px solid #e0e0e0;
       border-radius: 12px;
       padding: 1rem 1.25rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
     }
 
     .name {
@@ -102,20 +89,15 @@
       margin-bottom: 8px;
     }
 
-    .address {
-      display: flex;
-      align-items: flex-start;
-      gap: 5px;
-      font-size: 12px;
-      color: #777;
+    .rating-text {
+      line-height: 14px;
     }
 
-    .address svg {
-      margin-top: 2px;
-      flex-shrink: 0;
+    .address {
+      font-size: 12px;
+      color: #777;
     }
   </style>
 
 </body>
 </html>
-
