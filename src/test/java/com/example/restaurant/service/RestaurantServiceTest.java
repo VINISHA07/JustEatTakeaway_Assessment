@@ -89,7 +89,7 @@ class RestaurantServiceTest {
     }
 
     @Test
-    void capsResultsAtTenRestaurants() throws Exception {
+    void capsResultsAtTwelveRestaurants() throws Exception {
         String singleRestaurant = """
                 {
                   "name": "Place %d",
@@ -112,7 +112,7 @@ class RestaurantServiceTest {
 
         List<Restaurant> result = service.getRestaurantsByPostcode("EC1A1BB");
 
-        assertThat(result).hasSize(10);
+        assertThat(result).hasSize(12);
     }
 
     @Test
@@ -125,4 +125,3 @@ class RestaurantServiceTest {
                 .hasMessageContaining("Connection refused");
     }
 }
-

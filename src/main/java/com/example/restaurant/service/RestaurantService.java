@@ -26,7 +26,7 @@ public class RestaurantService {
      * Maximum number of restaurants to return in a single response.
      * Adjust this value to control the result set size.
      */
-    private static final int MAX_RESULTS = 10;
+    private static final int MAX_RESULTS = 12;
 
     /** Base URL of the Just Eat enriched restaurant API. */
     private static final String JUST_EAT_API_BASE_URL = "https://uk.api.just-eat.io/discovery/uk/restaurants/enriched/bypostcode";

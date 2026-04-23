@@ -35,7 +35,7 @@ public class RestaurantApiController {
      * Returns a list of restaurants for the given UK postcode.
      * <p>
      * Delegates to {@link RestaurantService#getRestaurantsByPostcode(String)} and
-     * returns the first 10 results from the Just Eat API.
+     * returns the first 12 results from the Just Eat API.
      *
      * @param postcode the UK postcode to search (e.g. "EC4M7RF")
      * @return {@code 200 OK} with a list of restaurants, or {@code 500} on error
